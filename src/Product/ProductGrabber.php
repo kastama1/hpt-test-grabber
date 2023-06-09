@@ -16,19 +16,45 @@ class ProductGrabber implements Grabber
         $product = $crawler->filter('.new-tile')->first();
 
         if ($product->count()) {
-            $product->filter('.tile-link')->attr('href');
-            $productPage = file_get_contents("https://www.czc.cz/$manufacturerCode/hledat");
-            $crawler = new Crawler($productPage);
+            $productUrl = $product->filter('.tile-link')->attr('href');
+            $productPage = file_get_contents("https://www.czc.cz$productUrl");
 
-            return $crawler;
+            return new Crawler($productPage);
         }
 
         return false;
     }
 
-    public function getPrice(Crawler $product): float
+    public function getPrice(Crawler $product): ?float
     {
-        return (float) filter_var($product->filter('.price-vatin')->text(), FILTER_SANITIZE_NUMBER_FLOAT);
+        $container = $product->filter('.pd-wrap .total-price .price-vatin');
+
+        if ($container->count()) {
+            return (float) filter_var($container->innerText(),
+                FILTER_SANITIZE_NUMBER_FLOAT);
+        }
+        return null;
     }
 
+    public function getName(Crawler $product): ?string
+    {
+        $container = $product->filter('.pd-wrap h1');
+
+        if ($container->count()) {
+            return $container->innerText();
+        }
+
+        return null;
+    }
+
+    public function getRating(Crawler $product): ?float
+    {
+        $container = $product->filter('.pd-header .rating');
+
+        if ($container->count()) {
+            return (float) filter_var($container->innerText(), FILTER_SANITIZE_NUMBER_FLOAT);
+        }
+
+        return null;
+    }
 }

@@ -35,6 +35,8 @@ class ProductDispatcher extends Dispatcher
 
             if ($product) {
                 $productData['price'] = $this->getGrabber()->getPrice($product);
+                $productData['title'] = $this->getGrabber()->getName($product);
+                $productData['rating'] = $this->getGrabber()->getRating($product);
 
                 $this->getOutput()->setProducts($code, $productData);
             }
