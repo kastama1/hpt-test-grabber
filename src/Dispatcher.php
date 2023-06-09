@@ -20,8 +20,22 @@ class Dispatcher
      */
     public function run(): string
     {
-        // code here
-
         return $this->output->getJson();
+    }
+
+    /**
+     * @return Grabber
+     */
+    public function getGrabber(): Grabber
+    {
+        return $this->grabber;
+    }
+
+    /**
+     * @return Output
+     */
+    public function getOutput(): Output
+    {
+        return $this->output;
     }
 }
